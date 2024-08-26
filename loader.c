@@ -15,13 +15,16 @@ int fd;
  */
 void loader_cleanup() {
     if (ehdr) free(ehdr);
+    if (phdr) free(phdr);
     if (fd >= 0) close(fd);
 }
 
 /*
  * Load and run the ELF executable file
  */
-void load_and_run_elf(char *exe) {
+void load_and_run_elf(char** argv) {
+    char *exe = argv[1];  // Get the ELF file path from the arguments
+
     // 1. Open the ELF file
     fd = open(exe, O_RDONLY);
     if (fd < 0) {
@@ -106,7 +109,7 @@ int main(int argc, char** argv)
     }
     // 1. Carry out necessary checks on the input ELF file
     // 2. Passing it to the loader for carrying out the loading/execution
-    load_and_run_elf(argv[1]);
+    load_and_run_elf(argv);
     // 3. Invoke the cleanup routine inside the loader
     return 0;
 }
